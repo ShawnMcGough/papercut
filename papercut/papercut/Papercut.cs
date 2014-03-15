@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -9,10 +10,16 @@ namespace papercut
     internal class Papercut
     {
         private HttpClient _httpClient;
+
+        public Papercut()
+        {
+            ServicePointManager.DefaultConnectionLimit = 100;
+        }
         public void Start(string baseAddress, int requests)
         {
             // create client
             _httpClient = new HttpClient() { BaseAddress = new Uri(baseAddress) };
+            
 
             // add accept json header
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
