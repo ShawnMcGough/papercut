@@ -14,6 +14,8 @@ namespace papercut
         public Papercut()
         {
             ServicePointManager.DefaultConnectionLimit = 100;
+            // ignore certificate errors
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
         }
         public void Start(string baseAddress, int requests)
         {
@@ -41,11 +43,11 @@ namespace papercut
             }
 
         }
-        private void RunAsync(int requestsPerSecond)
+        private void RunAsync(int numOfRequests)
         {
             var requests = new List<Task>();
 
-            for (var i = 0; i < requestsPerSecond; i++)
+            for (var i = 0; i < numOfRequests; i++)
                 requests.Add(GetTask(i));
 
             Task.WaitAll(requests.ToArray());
