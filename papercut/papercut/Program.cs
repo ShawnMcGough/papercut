@@ -1,14 +1,22 @@
-﻿namespace papercut
+﻿using System;
+using System.Threading.Tasks;
+
+namespace papercut
 {
     class Program
     {
         static void Main(string[] args)
         {
-            const string url = "http://www.example.com";
-            const int requests = 5;
+            const string url = "http://localhost:17054";
+            const int numOfRequests = 500;
 
-            var papercut = new Papercut();
-            papercut.Start(url, requests);
+
+                Console.WriteLine("Press Enter to start...");
+                Console.ReadLine();
+
+            Task.WaitAll(new Papercut().Start(url, numOfRequests));
+                Console.WriteLine("Press Enter to exit...");
+                Console.ReadLine();
 
         }
     }

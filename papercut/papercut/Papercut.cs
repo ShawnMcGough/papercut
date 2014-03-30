@@ -10,26 +10,24 @@ namespace papercut
     internal class Papercut
     {
         private HttpClient _httpClient;
-
         public Papercut()
         {
             ServicePointManager.DefaultConnectionLimit = 100;
+
             // ignore certificate errors
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
         }
-        public void Start(string baseAddress, int requests)
+        public async Task Start(string url, int requests)
         {
             // create client
-            _httpClient = new HttpClient() { BaseAddress = new Uri(baseAddress) };
-            
+            _httpClient = new HttpClient() { BaseAddress = new Uri(url) };
 
             // add accept json header
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
+            Console.WriteLine("Starting...");
             try
             {
-                Console.WriteLine("Starting...");
-                RunAsync(requests);
+                await RunAsync(requests);
             }
             catch (AggregateException ae)
             {
@@ -43,24 +41,27 @@ namespace papercut
             }
 
         }
-        private void RunAsync(int numOfRequests)
+
+        private Task RunAsync(int numOfRequests)
         {
             var requests = new List<Task>();
 
             for (var i = 0; i < numOfRequests; i++)
                 requests.Add(GetTask(i));
 
-            Task.WaitAll(requests.ToArray());
-        }
+            return Task.WhenAll(requests.ToArray());
 
+        }
         private async Task<bool> GetTask(int i)
         {
             Console.WriteLine(i);
             var responseTask = _httpClient.GetAsync("/");
 
             var response = await responseTask;
-            Console.WriteLine(response.IsSuccessStatusCode ? "success." : "failure.");
+            Console.WriteLine("{0} : {1}", i, response.IsSuccessStatusCode ? "success." : "failure.");
             return response.IsSuccessStatusCode;
         }
+
+
     }
 }
