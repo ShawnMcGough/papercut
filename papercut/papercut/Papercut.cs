@@ -55,10 +55,11 @@ namespace papercut
         private async Task<bool> GetTask(int i)
         {
             Console.WriteLine(i);
+
             var responseTask = _httpClient.GetAsync("/");
 
             var response = await responseTask;
-            Console.WriteLine("{0} : {1}", i, response.IsSuccessStatusCode ? "success." : "failure.");
+            Console.WriteLine("{0} : {1} ({2})", i, response.IsSuccessStatusCode ? "success." : "failure {0}", response.StatusCode);
             return response.IsSuccessStatusCode;
         }
 

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net;
 using System.Threading;
-using System.Web;
 using System.Web.Mvc;
 
 namespace TestTarget.Controllers
@@ -14,6 +12,10 @@ namespace TestTarget.Controllers
         {
 
             Thread.Sleep(R.Next(500, 2000));
+
+            if (R.Next(500, 2000) % 10 == 0)
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError);
+
             return View();
         }
 
